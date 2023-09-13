@@ -11,6 +11,8 @@ public class DishesDbContext : DbContext
     public DbSet<Ingredient> Ingredients { get; set; } = null!;
 
 
+    public DishesDbContext() {}
+
     public DishesDbContext(DbContextOptions<DishesDbContext> options)
         : base(options)
     {
