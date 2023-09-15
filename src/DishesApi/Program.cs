@@ -1,5 +1,6 @@
 using System.Reflection.Metadata.Ecma335;
 using DishesAPI.DbContexts;
+using DishesAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
@@ -16,34 +17,32 @@ var app = builder.Build();
 //configure the request pipeline here
 app.UseHttpsRedirection();
 
-app.MapGet("/dishes", async (DishesDbContext dishesDbContext) => 
+app.MapGet("/dishes", async (DishesDbContext dishesDbContext, 
+    IMapper mapper) => 
 {
-    return await dishesDbContext.Dishes.ToListAsync();
+    return mapper.Map<IEnumerable<DishDto>>(await dishesDbContext.Dishes.ToListAsync());
 });
 
 app.MapGet("/dishes/{dishId:guid}", async (DishesDbContext dishesDbContext, 
-    Guid dishId) =>
+    IMapper mapper, Guid dishId) =>
 {
-    return await dishesDbContext.Dishes
-        .FirstOrDefaultAsync(d => d.Id == dishId);
+    return mapper.Map<DishDto>(await dishesDbContext.Dishes
+        .FirstOrDefaultAsync(d => d.Id == dishId));
 });
 
 app.MapGet("/dishes/{dishName}", async (DishesDbContext dishesDbContext, 
-    string dishName) =>
+    IMapper mapper, string dishName) =>
 {
-    return await dishesDbContext.Dishes
-        .FirstOrDefaultAsync(d => d.Name == dishName);
+    return mapper.Map<DishDto>(await dishesDbContext.Dishes
+        .FirstOrDefaultAsync(d => d.Name == dishName));
 });
 
 app.MapGet("/dishes/{dishId}/ingredients", async (DishesDbContext dishesDbContext, 
-    Guid dishId) =>
+    IMapper mapper, Guid dishId) =>
 {
-    var result = await (dishesDbContext.Dishes
+    return mapper.Map<IEnumerable<IngredientDto>>((await dishesDbContext.Dishes
         .Include(d => d.Ingredients)
-        .FirstOrDefaultAsync(d => d.Id == dishId));
-
-    return result?.Ingredients;
-
+        .FirstOrDefaultAsync(d => d.Id == dishId))?.Ingredients);
 });
    
 
