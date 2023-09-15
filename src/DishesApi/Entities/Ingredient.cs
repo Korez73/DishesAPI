@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
+﻿namespace DishesAPI.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DishesAPI.Entities;
 
 public class Ingredient
 {

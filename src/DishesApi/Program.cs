@@ -1,12 +1,15 @@
 using System.Reflection.Metadata.Ecma335;
 using DishesAPI.DbContexts;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //add services to the container here
 builder.Services.AddDbContext<DishesDbContext>(o => o.UseSqlite(
     builder.Configuration["ConnectionStrings:DishesDBConnectionString"]));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

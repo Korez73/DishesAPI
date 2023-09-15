@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DishesApi.Migrations
+namespace DishesAPI.Migrations
 {
     [DbContext(typeof(DishesDbContext))]
     [Migration("20230909153856_InitialMigration")]

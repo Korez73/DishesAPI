@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+﻿namespace DishesAPI.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-
-namespace DishesAPI.Entities;
 
 public class Dish 
 { 
