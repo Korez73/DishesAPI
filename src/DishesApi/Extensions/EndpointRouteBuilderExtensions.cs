@@ -21,7 +21,9 @@ public static class EndpointRouteBuilderExtensions
         var ingredientsEndpoints = builder.MapGroup("/dishes/{dishId:guid}/ingredients");
 
         ingredientsEndpoints.MapGet("", IngredientsHandlers.GetIngredientsWithDishGuidAsync);
-
+        ingredientsEndpoints.MapPost("", () => {
+            throw new NotImplementedException();
+        });
     }
     
 }

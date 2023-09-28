@@ -1,12 +1,7 @@
-using System.Reflection.Metadata.Ecma335;
 using DishesAPI.DbContexts;
-using DishesAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http.HttpResults;
-using DishesAPI.Entities;
 using DishesAPI.Extensions;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +11,24 @@ builder.Services.AddDbContext<DishesDbContext>(o => o.UseSqlite(
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 //configure the request pipeline here
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler();
+    // app.UseExceptionHandler( configureBuilder => {
+    //     configureBuilder.Run(async context => {
+    //         context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+    //         context.Response.ContentType = "text/html";
+    //         await context.Response.WriteAsync("An unexpected problem occured.");
+    //     });
+    // });
+}
 
+app.UseHttpsRedirection();
 app.RegisterDishesEndpoints();
 app.RegisterIngredientsEndpoints();
 
