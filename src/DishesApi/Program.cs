@@ -13,6 +13,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddProblemDetails();
 
+//builder.Services.AddAuthentication().AddJwtBearer( options => {options.}); //we could configure this inline doing an action, but it's cleaner to use a settings file
+builder.Services.AddAuthentication().AddJwtBearer(); 
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 //configure the request pipeline here
@@ -29,6 +33,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication(); //this isn't strictly necessiary anymore, it gets automatically added by AddAuthN above, but adding it here gives us control of when it's added
+app.UseAuthorization();  //again, not strictly necessiary, but if we are adding it, AuthZ needs to be after AuthN
+
 app.RegisterDishesEndpoints();
 app.RegisterIngredientsEndpoints();
 

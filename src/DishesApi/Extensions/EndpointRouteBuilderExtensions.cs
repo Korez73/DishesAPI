@@ -7,17 +7,21 @@ public static class EndpointRouteBuilderExtensions
 {
     public static void RegisterDishesEndpoints(this IEndpointRouteBuilder builder)
     {
-        var dishesEndpoints = builder.MapGroup("/dishes");
+        var dishesEndpoints = builder.MapGroup("/dishes")
+            .RequireAuthorization();
+
         var dishesWithGuidIdEndpoints = dishesEndpoints.MapGroup("/{dishId:guid}");
 
         var dishesWithGuidIdEndpointsAndLockFilters = builder.MapGroup("/dishes/{dishId:guid}")
+            .RequireAuthorization()
             .AddEndpointFilter(new DishIsLockedFilter(new ("fd630a57-2352-4731-b25c-db9cc7601b16")))
             .AddEndpointFilter(new DishIsLockedFilter(new ("eacc5169-b2a7-41ad-92c3-dbb1a5e7af06")));
 
 
         dishesEndpoints.MapGet("", DishesHandlers.GetDishesAsync);
         dishesWithGuidIdEndpoints.MapGet("", DishesHandlers.GetDishesByGuidAsync).WithName("GetDish");
-        dishesEndpoints.MapGet("/{dishName}", DishesHandlers.GetDishesByNameAsync);
+        dishesEndpoints.MapGet("/{dishName}", DishesHandlers.GetDishesByNameAsync)
+            .AllowAnonymous();
         dishesEndpoints.MapPost("", DishesHandlers.CreateDishAsync)
             .AddEndpointFilter<ValidateAnnotationsFilter>();
         dishesWithGuidIdEndpointsAndLockFilters.MapPut("", DishesHandlers.UpdateDishAsync);
@@ -28,7 +32,8 @@ public static class EndpointRouteBuilderExtensions
 
     public static void RegisterIngredientsEndpoints(this IEndpointRouteBuilder builder)
     {
-        var ingredientsEndpoints = builder.MapGroup("/dishes/{dishId:guid}/ingredients");
+        var ingredientsEndpoints = builder.MapGroup("/dishes/{dishId:guid}/ingredients")
+            .RequireAuthorization();
 
         ingredientsEndpoints.MapGet("", IngredientsHandlers.GetIngredientsWithDishGuidAsync);
         ingredientsEndpoints.MapPost("", () => {
