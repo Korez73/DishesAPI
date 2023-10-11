@@ -22,6 +22,9 @@ builder.Services.AddAuthorizationBuilder()
         .RequireRole("admin")
         .RequireClaim("country", "Belgium"));
 
+builder.Services.AddEndpointsApiExplorer(); //creates metadata
+builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -39,6 +42,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSwagger(); //gen open api spec
+app.UseSwaggerUI(); //enable documentation UI
 
 app.UseAuthentication(); //this isn't strictly necessiary anymore, it gets automatically added by AddAuthN above, but adding it here gives us control of when it's added
 app.UseAuthorization();  //again, not strictly necessiary, but if we are adding it, AuthZ needs to be after AuthN
