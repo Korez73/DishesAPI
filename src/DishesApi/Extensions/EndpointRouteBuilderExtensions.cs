@@ -13,7 +13,7 @@ public static class EndpointRouteBuilderExtensions
         var dishesWithGuidIdEndpoints = dishesEndpoints.MapGroup("/{dishId:guid}");
 
         var dishesWithGuidIdEndpointsAndLockFilters = builder.MapGroup("/dishes/{dishId:guid}")
-            .RequireAuthorization()
+            .RequireAuthorization("RequireAdminFromBelgium")
             .AddEndpointFilter(new DishIsLockedFilter(new ("fd630a57-2352-4731-b25c-db9cc7601b16")))
             .AddEndpointFilter(new DishIsLockedFilter(new ("eacc5169-b2a7-41ad-92c3-dbb1a5e7af06")));
 
@@ -23,6 +23,7 @@ public static class EndpointRouteBuilderExtensions
         dishesEndpoints.MapGet("/{dishName}", DishesHandlers.GetDishesByNameAsync)
             .AllowAnonymous();
         dishesEndpoints.MapPost("", DishesHandlers.CreateDishAsync)
+            .RequireAuthorization("RequireAdminFromBelgium")
             .AddEndpointFilter<ValidateAnnotationsFilter>();
         dishesWithGuidIdEndpointsAndLockFilters.MapPut("", DishesHandlers.UpdateDishAsync);
         dishesWithGuidIdEndpointsAndLockFilters.MapDelete("", DishesHandlers.DeleteDishAsync)

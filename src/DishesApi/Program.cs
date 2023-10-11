@@ -16,6 +16,12 @@ builder.Services.AddProblemDetails();
 //builder.Services.AddAuthentication().AddJwtBearer( options => {options.}); //we could configure this inline doing an action, but it's cleaner to use a settings file
 builder.Services.AddAuthentication().AddJwtBearer(); 
 builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireAdminFromBelgium", policy => 
+    policy
+        .RequireRole("admin")
+        .RequireClaim("country", "Belgium"));
+
 
 var app = builder.Build();
 
