@@ -2,6 +2,7 @@ namespace DishesAPI.Extensions;
 
 using DishesAPI.EndpointFilters;
 using DishesAPI.EndpointHandlers;
+using DishesAPI.Models;
 
 public static class EndpointRouteBuilderExtensions
 {
@@ -29,10 +30,21 @@ public static class EndpointRouteBuilderExtensions
                 "dish via this endpoint by providing the identifer.");
         
         dishesEndpoints.MapGet("/{dishName}", DishesHandlers.GetDishesByNameAsync)
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .WithOpenApi(operation => {
+                operation.Deprecated = true;
+                return operation;
+            });
+            
         dishesEndpoints.MapPost("", DishesHandlers.CreateDishAsync)
             .RequireAuthorization("RequireAdminFromBelgium")
-            .AddEndpointFilter<ValidateAnnotationsFilter>();
+            .AddEndpointFilter<ValidateAnnotationsFilter>()
+            .ProducesValidationProblem(400)
+            .Accepts<DishForCreationDto>(
+                "application/json",
+                "application/vnd.marvin.dishforcreation+json"
+            );
+
         dishesWithGuidIdEndpointsAndLockFilters.MapPut("", DishesHandlers.UpdateDishAsync);
         dishesWithGuidIdEndpointsAndLockFilters.MapDelete("", DishesHandlers.DeleteDishAsync)
             .AddEndpointFilter<LogNotFoundResponseFilter>();
