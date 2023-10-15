@@ -2,6 +2,7 @@ using DishesAPI.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using DishesAPI.Extensions;
 using System.Net;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,29 @@ builder.Services.AddAuthorizationBuilder()
         .RequireClaim("country", "Belgium"));
 
 builder.Services.AddEndpointsApiExplorer(); //creates metadata
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => {
+    options.AddSecurityDefinition("TokenAuthNZ", 
+        new()
+        {
+            Name = "Authorization",
+            Description = "Token-based authentication and authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            In = ParameterLocation.Header
+
+        });
+    options.AddSecurityRequirement(
+        new ()
+        {
+            {
+                new ()
+                {
+                    Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "TokenAuthNZ" }
+                }, new List<string>()}
+        });
+});
 
 
 var app = builder.Build();
